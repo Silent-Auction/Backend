@@ -7,6 +7,13 @@ const secrets = require("../secrets");
 
 const router = express.Router();
 
+
+// Test Endpoint for GET
+router.get('/', verifyToken, (req,res) => {
+  Users.findUser(req.decoded.username)
+    .then(user => res.status(200).json(user));
+});
+
 router.post('/register', validateRegister, (req,res) => {
   req.body.username = req.body.username.toLowerCase();
   if (!req.body.is_seller) {
@@ -62,6 +69,7 @@ function generateToken(user) {
   const payload = {
     subject: user.id,
     username: user.username,
+    seller: user.is_seller,
   };
 
   const options = {
@@ -70,6 +78,18 @@ function generateToken(user) {
 
   // extract the secret away so it can be required and used where needed
   return jwt.sign(payload, secrets.jwtSecret, options); // this method is synchronous
+}
+
+function verifyToken(req,res,next) {
+  const token = req.headers.authorization;  
+  jwt.verify(token, secrets.jwtSecret, (err, decodedToken) => {
+    if (err) {
+      res.status(400).json({message: "You must be logged in to view this."})
+    } else {
+      req.decoded = decodedToken;
+      next();
+    }
+  })
 }
 
 module.exports = router;
