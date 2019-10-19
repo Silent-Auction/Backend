@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const Users = require("./auth-model");
 const secrets = require("../secrets");
-
+const helpers = require("../api/helpers")
 const router = express.Router();
 
 
 // Test Endpoint for GET
-router.get('/', verifyToken, (req,res) => {
+router.get('/', helpers.verifyToken, (req,res) => {
   Users.findUser(req.decoded.username)
     .then(user => res.status(200).json(user));
 });
@@ -80,16 +80,5 @@ function generateToken(user) {
   return jwt.sign(payload, secrets.jwtSecret, options); // this method is synchronous
 }
 
-function verifyToken(req,res,next) {
-  const token = req.headers.authorization;  
-  jwt.verify(token, secrets.jwtSecret, (err, decodedToken) => {
-    if (err) {
-      res.status(400).json({message: "You must be logged in to view this."})
-    } else {
-      req.decoded = decodedToken;
-      next();
-    }
-  })
-}
 
 module.exports = router;
