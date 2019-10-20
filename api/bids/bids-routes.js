@@ -18,7 +18,7 @@ router.get("/:id", (req,res) => {
 });
 
 // Add bid to auction, must have buyer role, valid auctoin, and auction must not be over. 
-router.post("/:auction_id", [isBuyer, validateBid, findAuction, validBid] , (req,res) => {
+router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, validPrice] , (req,res) => {
   req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
   Bids.add(req.bid)
     .then(id => res.status(201).json({id}))
@@ -27,7 +27,7 @@ router.post("/:auction_id", [isBuyer, validateBid, findAuction, validBid] , (req
 
 // Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
-router.put("/:id", [authOwner, validateBid, findAuction, validBid, canModify], (req,res) => {
+router.put("/:id", [authOwner, validateBid, findAuction, validDate, validPrice, canModify], (req,res) => {
   req.body.created_at = new Date();
   Bids.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))
@@ -35,7 +35,7 @@ router.put("/:id", [authOwner, validateBid, findAuction, validBid, canModify], (
 });
 
 // Delete bid. Also requires logic
-router.delete("/:id", [authOwner, findAuction, canModify], (req,res) => {
+router.delete("/:id", [authOwner, findAuction, validDate, canModify], (req,res) => {
   Bids.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))
@@ -94,22 +94,25 @@ function findAuction(req, res, next) {
     })
 }
 
-function validBid(req, res, next) {
+function validDate(req, res, next) {
   let date = new Date().getTime();
   if (date < req.auction.date_ending) {
-    Auctions.getHighestBid(req.auction.id)
-      .then(auction => {
-        if (auction.price < req.bid.price) {
-          next();
-        } else {
-          res.status(400).json({message: "You cannot bid lower than the current price."})
-        }
-      })
-      .catch(err => res.status(500).json({message: "Error retrieving from the database."}))
+    next();
   } else {
-    res.status(400).json({message: "Auction is already over."})
+      res.status(400).json({message: "Auction is already over."})
   }
+}
+
+function validPrice(req, res, next) {
   Auctions.getHighestBid(req.auction.id)
+    .then(auction => {
+      if (auction.price < req.bid.price) {
+        next();
+      } else {
+        res.status(400).json({message: "You cannot bid lower than the current price."})
+      }
+    })
+    .catch(err => res.status(500).json({message: "Error retrieving from the database."}))
 }
 
 function canModify(req,res,next) {
