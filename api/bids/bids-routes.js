@@ -7,14 +7,14 @@ const router = express.Router();
 
 // Need route for dahsboard: view all current auctions
 
-// Add auction. Must have the seller role.
-router.post("/:auction_id", [helpers.verifyToken, isBuyer] , (req,res) => {
+// Add bid to auction, must have buyer role. 
+router.post("/:auction_id", [helpers.verifyToken, isBuyer, validateBid] , (req,res) => {
   Auctions.add(req.auction)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
 
-// Edit your auction. Checks token to see if you are the owner of auction.
+// Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
 router.put("/:id", [helpers.verifyToken, authOwner], (req,res) => {
   Auctions.edit(req.auction.user_id, req.body)
@@ -22,14 +22,14 @@ router.put("/:id", [helpers.verifyToken, authOwner], (req,res) => {
     .catch(err => res.status(500).json({message: "Error updating database"}))
 });
 
-// Delete auction
+// Delete bid. Also requires logic
 router.delete("/:id", [helpers.verifyToken, authOwner], (req,res) => {
   Auctions.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))
 })
 
-// Checks for seller role
+// Checks for buyer role
 function isBuyer(req,res,next) {
   if (!req.decoded.seller) {
     next();    
@@ -38,12 +38,12 @@ function isBuyer(req,res,next) {
   }
 }
 
-// Matches token's user ID with auction ID passed in params
+// Matches token's user ID with user_id associated with bid
 function authOwner(req,res,next) {
   Bids.getBid(req.params.id)
     .then(bid => {
       if (bid) {
-        if (auction.user_id === req.decoded.subject) {
+        if (bid.user_id === req.decoded.subject) {
           req.bid = bid;
           next();
         } else {
@@ -55,7 +55,7 @@ function authOwner(req,res,next) {
     })
 }
 
-// Checks to see if body has all fields for auction
+// Checks to see if body has all fields for bid
 function validateBid(req, res, next) {
   const bid = req.body;
   if (bid) {
@@ -63,7 +63,7 @@ function validateBid(req, res, next) {
       req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
       next();
     } else {
-      res.status(400).json({message: "Price"})
+      res.status(400).json({message: "Price is required."})
     }
   } else {
     res.status(400).json({message: "Body is required."})
