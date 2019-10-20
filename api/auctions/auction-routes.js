@@ -70,10 +70,10 @@ function validateAuction(req, res, next) {
   const auction = req.body;
   if (auction) {
     if (!auction.name || !auction.starting_price || !auction.date_ending || !auction.image ) {
-      req.auction = {...auction, id: req.decoded.subject}
-      next();
-    } else {
       res.status(400).json({message: "Name, starting price, end date, and image URL is required."})
+    } else {
+      req.auction = {...auction, user_id: req.decoded.subject}
+      next();
     }
   } else {
     res.status(400).json({message: "Body is required."})

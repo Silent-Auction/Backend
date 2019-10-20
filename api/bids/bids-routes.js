@@ -44,7 +44,7 @@ function authOwner(req,res,next) {
     .then(bid => {
       if (bid) {
         if (auction.user_id === req.decoded.subject) {
-          req.bid = req.bid;
+          req.bid = bid;
           next();
         } else {
           res.status(403).json({message: "You are unauthorized to perform this action."});
@@ -57,13 +57,13 @@ function authOwner(req,res,next) {
 
 // Checks to see if body has all fields for auction
 function validateBid(req, res, next) {
-  const auction = req.body;
-  if (auction) {
-    if (!auction.name || !auction.starting_price || !auction.date_ending || !auction.image ) {
-      req.auction = {...auction, id: req.decoded.subject}
+  const bid = req.body;
+  if (bid) {
+    if (bid.price) {
+      req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
       next();
     } else {
-      res.status(400).json({message: "Name, starting price, end date, and image URL is required."})
+      res.status(400).json({message: "Price"})
     }
   } else {
     res.status(400).json({message: "Body is required."})
