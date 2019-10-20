@@ -3,6 +3,7 @@ const db = require("../../data/dbconfig");
 module.exports = {
   getAuction,
   add,
+  getHighestBid,
   edit,
   remove
 }
@@ -13,6 +14,14 @@ function getAuction(id) {
     .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_ending', 'a.image')
     .whereRaw(`a.id = ${id}`)
     .first();
+}
+
+function getHighestBid(auction_id) {
+  return db('auction_bids as ab')
+    .where({auction_id})
+    .orderBy('price', 'desc')
+    .select('ab.price')
+    .first()
 }
 
 function add(auction) {

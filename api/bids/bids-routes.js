@@ -1,13 +1,24 @@
 const express = require("express");
 
+const Auctions = require('../auctions/auction-model');
 const Bids = require("./bids-model");
 const router = express.Router();
 
-// Need route for dahsboard: view all current auctions
+router.get("/:id", (req,res) => {
+  Bids.getBid(req.params.id)
+    .then(bid => {
+      if (bid) {
+        res.status(201).json(bid);
+      } else {
+        res.status(400).json({message: "Cannot find bid with specified ID."});
+      }
+    })
+    .catch(err => res.status(500).json({message: "Error retrieving from database"}));
+});
 
 // Add bid to auction, must have buyer role. 
-router.post("/:auction_id", [isBuyer, validateBid] , (req,res) => {
-  Auctions.add(req.auction)
+router.post("/:auction_id", [isBuyer, validateBid, findAuction] , (req,res) => {
+  Bids.add(req.bid)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
@@ -66,6 +77,25 @@ function validateBid(req, res, next) {
   } else {
     res.status(400).json({message: "Body is required."})
   }
+}
+
+function findAuction(req, res, next) {
+  Auctions.getAuction(req.params.auction_id)
+    .then(auction => {
+      if (auction) {
+        Auctions.getHighestBid(auction.id)
+          .then(price => {
+            price = price || auction.starting_price
+            if (price < req.bid.price) {
+              next();
+            } else {
+              res.status(400).json({message: "Your bid is lower than or equal to current price."});
+            }
+          })
+      } else {
+        res.status(400).json({message: "Cannot find auction with specified ID."});
+      }
+    })
 }
 
 module.exports = router;

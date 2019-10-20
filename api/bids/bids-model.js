@@ -5,7 +5,8 @@ module.exports = {
   getBid,
   add,
   remove,
-  edit
+  edit,
+
 }
 
 function getBid(id) {
@@ -23,7 +24,7 @@ function getBidsByAuction(auction_id) {
 
 function add(bid) {
   return db('auction_bids').insert(bid)
-    .then(id => ids[0])
+    .then(ids => ids[0])
 }
 
 function edit(id, bid) {

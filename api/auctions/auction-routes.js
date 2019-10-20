@@ -8,17 +8,22 @@ const router = express.Router();
 router.get('/:id', (req,res) => {
   Auctions.getAuction(req.params.id)
     .then(auction => {
-      Bids.getBidsByAuction(auction.id)
-        .then(bids => {
-          auction.bids = bids
-          res.status(200).json(auction)
-        })
+      if (auction) { 
+        Bids.getBidsByAuction(auction.id)
+          .then(bids => {
+            auction.bids = bids;
+            res.status(200).json(auction);
+          })
+          .catch(err => res.status(500).json({message: "Error retrieving from database."}));
+      } else {
+        res.status(400).json({message: "Cannot find auction with specified ID."})
+      } 
     })
+    .catch(err => res.status(500).json({message: "Error retrieving from database."}));
 });
 
 // Add auction. Must have the seller role.
 router.post("/", [isSeller, validateAuction] , (req,res) => {
-  console.log(req.auction);
   Auctions.add(req.auction)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
