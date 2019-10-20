@@ -2,11 +2,10 @@ const express = require("express");
 
 const Auctions = require("./auction-model");
 const Bids = require("../bids/bids-model");
-const helpers = require("../helpers")
 const router = express.Router();
 
 // Get info for auction by ID. Includes current bids
-router.get('/:id', helpers.verifyToken, (req,res) => {
+router.get('/:id', (req,res) => {
   Auctions.getAuction(req.params.id)
     .then(auction => {
       Bids.getBidsByAuction(auction.id)
@@ -18,7 +17,8 @@ router.get('/:id', helpers.verifyToken, (req,res) => {
 });
 
 // Add auction. Must have the seller role.
-router.post("/", [helpers.verifyToken, isSeller, validateAuction] , (req,res) => {
+router.post("/", [isSeller, validateAuction] , (req,res) => {
+  console.log(req.auction);
   Auctions.add(req.auction)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
@@ -26,14 +26,14 @@ router.post("/", [helpers.verifyToken, isSeller, validateAuction] , (req,res) =>
 
 // Edit your auction. Checks token to see if you are the owner of auction.
 // Need to add more logic (when can you not edit the auction?)
-router.put("/:id", [helpers.verifyToken, authOwner], (req,res) => {
-  Auctions.edit(req.auction.user_id, req.body)
+router.put("/:id", authOwner, (req,res) => {
+  Auctions.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))
     .catch(err => res.status(500).json({message: "Error updating database"}))
 });
 
 // Delete auction
-router.delete("/:id", [helpers.verifyToken, authOwner], (req,res) => {
+router.delete("/:id", authOwner, (req,res) => {
   Auctions.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))

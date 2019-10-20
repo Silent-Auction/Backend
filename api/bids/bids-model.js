@@ -27,9 +27,13 @@ function add(bid) {
 }
 
 function edit(id, bid) {
-  return db('auction_bids').update(bid).where({id})
+  return db('auction_bids')
+    .update(bid)
+    .where({id})
 }
 
 function remove(id) {
-  return db('auction_bids').del().where({id});
+  return db('auction_bids')
+    .del()
+    .where({id});
 }

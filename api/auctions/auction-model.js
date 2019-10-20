@@ -8,16 +8,20 @@ module.exports = {
 }
 
 function getAuction(id) {
-  return db('auctions').where({id})
+  return db('auctions as a')
+    .join('users', 'users.id', 'a.user_id')
+    .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_ending', 'a.image')
+    .whereRaw(`a.id = ${id}`)
     .first();
 }
 
 function add(auction) {
   return db('auctions').insert(auction)
-    .then(id => ids[0])
+    .then(ids => ids[0])
 }
 
 function edit(id, auction) {
+  console.log({id})
   return db('auctions').update(auction).where({id})
 }
 

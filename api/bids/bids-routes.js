@@ -1,14 +1,12 @@
 const express = require("express");
 
-const Auctions = require("./auction-model");
-const Bids = require("../bids/bids-model");
-const helpers = require("../helpers")
+const Bids = require("./bids-model");
 const router = express.Router();
 
 // Need route for dahsboard: view all current auctions
 
 // Add bid to auction, must have buyer role. 
-router.post("/:auction_id", [helpers.verifyToken, isBuyer, validateBid] , (req,res) => {
+router.post("/:auction_id", [isBuyer, validateBid] , (req,res) => {
   Auctions.add(req.auction)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
@@ -16,14 +14,14 @@ router.post("/:auction_id", [helpers.verifyToken, isBuyer, validateBid] , (req,r
 
 // Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
-router.put("/:id", [helpers.verifyToken, authOwner], (req,res) => {
-  Auctions.edit(req.auction.user_id, req.body)
+router.put("/:id", authOwner, (req,res) => {
+  Auctions.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))
     .catch(err => res.status(500).json({message: "Error updating database"}))
 });
 
 // Delete bid. Also requires logic
-router.delete("/:id", [helpers.verifyToken, authOwner], (req,res) => {
+router.delete("/:id", authOwner, (req,res) => {
   Auctions.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))

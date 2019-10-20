@@ -14,8 +14,8 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/api/auth", authRoutes);
-server.use("/api/auctions", auctionRoutes);
-server.use("/api/bids", bidsRoutes);
+server.use("/api/auctions", helpers.verifyToken, auctionRoutes);
+server.use("/api/bids", helpers.verifyToken, bidsRoutes);
 server.get("/", (req,res) => {
   res.send("Welcome to the root!");
 })
