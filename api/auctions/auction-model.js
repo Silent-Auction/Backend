@@ -35,5 +35,8 @@ function edit(id, auction) {
 }
 
 function remove(id) {
-  return db('auctions').del().where({id});
+  console.log(bid);
+  return db('auctions')
+    .where({id})
+    .del();
 }

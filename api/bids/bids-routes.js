@@ -11,14 +11,15 @@ router.get("/:id", (req,res) => {
         bid.created_at = new Date(bid.created_at);
         res.status(201).json(bid);
       } else {
-        res.status(400).json({message: "Cannot find bid with specified ID."});
+        res.status(404).json({message: "Cannot find bid with specified ID."});
       }
     })
     .catch(err => res.status(500).json({message: "Error retrieving from database"}));
 });
 
-// Add bid to auction, must have buyer role. 
-router.post("/:auction_id", [isBuyer, validateBid, findAuction] , (req,res) => {
+// Add bid to auction, must have buyer role, valid auctoin, and auction must not be over. 
+router.post("/:auction_id", [isBuyer, validateBid, findAuction, validBid] , (req,res) => {
+  req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
   Bids.add(req.bid)
     .then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
@@ -26,15 +27,16 @@ router.post("/:auction_id", [isBuyer, validateBid, findAuction] , (req,res) => {
 
 // Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
-router.put("/:id", authOwner, (req,res) => {
-  Auctions.edit(req.params.id, req.body)
+router.put("/:id", [authOwner, validateBid, findAuction, validBid, canModify], (req,res) => {
+  req.body.created_at = new Date();
+  Bids.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))
     .catch(err => res.status(500).json({message: "Error updating database"}))
 });
 
 // Delete bid. Also requires logic
-router.delete("/:id", authOwner, (req,res) => {
-  Auctions.remove(req.params.id)
+router.delete("/:id", [authOwner, findAuction, canModify], (req,res) => {
+  Bids.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))
 })
@@ -70,7 +72,7 @@ function validateBid(req, res, next) {
   const bid = req.body;
   if (bid) {
     if (bid.price) {
-      req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
+      req.bid = {...req.bid, ...bid};
       next();
     } else {
       res.status(400).json({message: "Price is required."})
@@ -81,22 +83,43 @@ function validateBid(req, res, next) {
 }
 
 function findAuction(req, res, next) {
-  Auctions.getAuction(req.params.auction_id)
+  Auctions.getAuction(req.params.auction_id || req.bid.auction_id)
     .then(auction => {
       if (auction) {
-        Auctions.getHighestBid(auction.id)
-          .then(price => {
-            price = price || auction.starting_price
-            if (price < req.bid.price) {
-              next();
-            } else {
-              res.status(400).json({message: "Your bid is lower than or equal to current price."});
-            }
-          })
+        req.auction = auction;
+        next();
       } else {
-        res.status(400).json({message: "Cannot find auction with specified ID."});
+        res.status(404).json({message: "Cannot find auction with specified ID."});
       }
     })
 }
 
+function validBid(req, res, next) {
+  let date = new Date().getTime();
+  if (date < req.auction.date_ending) {
+    Auctions.getHighestBid(req.auction.id)
+      .then(auction => {
+        if (auction.price < req.bid.price) {
+          next();
+        } else {
+          res.status(400).json({message: "You cannot bid lower than the current price."})
+        }
+      })
+      .catch(err => res.status(500).json({message: "Error retrieving from the database."}))
+  } else {
+    res.status(400).json({message: "Auction is already over."})
+  }
+  Auctions.getHighestBid(req.auction.id)
+}
+
+function canModify(req,res,next) {
+  Bids.getLastBid(req.bid.auction_id)
+    .then(lastBid => {
+      if (lastBid.id == req.params.id) {
+        next();
+      } else {
+        res.status(403).json({mesesage: "Cannot modify bid."})
+      }
+    })
+}
 module.exports = router;

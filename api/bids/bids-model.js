@@ -6,7 +6,7 @@ module.exports = {
   add,
   remove,
   edit,
-
+  getLastBid,
 }
 
 function getBid(id) {
@@ -28,14 +28,22 @@ function add(bid) {
     .then(ids => ids[0])
 }
 
+function getLastBid(auction_id) {
+  return db('auction_bids')
+    .where({auction_id})
+    .orderBy('price', 'desc')
+    .first();
+}
+
 function edit(id, bid) {
   return db('auction_bids')
-    .update(bid)
     .where({id})
+    .update({price: bid.price, created_at: bid.created_at})
 }
 
 function remove(id) {
   return db('auction_bids')
-    .del()
-    .where({id});
+    .where({id})
+    .del();
+
 }
