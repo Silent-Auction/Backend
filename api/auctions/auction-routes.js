@@ -9,8 +9,12 @@ router.get('/:id', (req,res) => {
   Auctions.getAuction(req.params.id)
     .then(auction => {
       if (auction) { 
+        auction.date_ending = new Date(auction.date_ending);
         Bids.getBidsByAuction(auction.id)
           .then(bids => {
+            bids.forEach(bid => {
+              bid.created_at = new Date(bid.created_at);
+            })
             auction.bids = bids;
             res.status(200).json(auction);
           })

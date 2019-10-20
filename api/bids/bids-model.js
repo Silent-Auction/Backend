@@ -12,6 +12,7 @@ module.exports = {
 function getBid(id) {
   return db('auction_bids')
     .where({id})
+    .first();
 }
 
 function getBidsByAuction(auction_id) {

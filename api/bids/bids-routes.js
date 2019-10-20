@@ -8,6 +8,7 @@ router.get("/:id", (req,res) => {
   Bids.getBid(req.params.id)
     .then(bid => {
       if (bid) {
+        bid.created_at = new Date(bid.created_at);
         res.status(201).json(bid);
       } else {
         res.status(400).json({message: "Cannot find bid with specified ID."});
