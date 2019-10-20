@@ -27,7 +27,7 @@ router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, valid
 
 // Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
-router.put("/:id", [authOwner, validateBid, findAuction, validDate, validPrice, canModify], (req,res) => {
+router.put("/:id", [authOwner, canModify, validateBid, findAuction, validDate, validPrice], (req,res) => {
   req.body.created_at = new Date();
   Bids.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))
@@ -35,7 +35,7 @@ router.put("/:id", [authOwner, validateBid, findAuction, validDate, validPrice, 
 });
 
 // Delete bid. Also requires logic
-router.delete("/:id", [authOwner, findAuction, validDate, canModify], (req,res) => {
+router.delete("/:id", [authOwner, canModify, findAuction, validDate], (req,res) => {
   Bids.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))
@@ -125,4 +125,5 @@ function canModify(req,res,next) {
       }
     })
 }
+
 module.exports = router;
