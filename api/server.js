@@ -14,6 +14,7 @@ server.use(helmet());
 server.use(cors());
 server.use(express.json());
 
+server.use(express.static('public'));
 server.use("/api/auth", authRoutes);
 server.use("/api/auctions", helpers.verifyToken, auctionRoutes);
 server.use("/api/bids", helpers.verifyToken, bidsRoutes);

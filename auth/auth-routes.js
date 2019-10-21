@@ -8,12 +8,60 @@ const helpers = require("../api/helpers")
 const router = express.Router();
 
 
-// Test Endpoint for GET
+/**
+ * @api {get} / Get personal user info
+ * @apiGroup Authorization
+ * @apiSuccess {Number} user.id User id
+ * @apiSuccess {String} user.username Username
+ * @apiSuccess {String} user.first_name First Name
+ * @apiSuccess {String} user.last_name Last Name
+ * @apiSuccess {Boolean} user.role Seller or buyer
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "id": 1,
+ *      "username": "user",
+ *      "first_name": "Test",
+ *      "last_name": "User",
+ *      "role:" true
+ *    }
+ * @apiErrorExample {json} List error
+ *    HTTP/1.1 500 Internal Server Error
+ */ 
 router.get('/', helpers.verifyToken, (req,res) => {
   Users.findUser(req.decoded.username)
-    .then(user => res.status(200).json(user));
+    .then(user => {
+      user.role = (user.role ? "seller" : "buyer")
+      res.status(200).json(user);
+    })
+    .catch(err => res.status(500).json({message: "Error retrieving from database"}))
 });
 
+/**
+ * @api {post} /api/auth/register Register
+ * @apiGroup Authorization
+ * @apiParam {string} username Username
+ * @apiParam {string} password Password
+ * @apiParam {string} first_name First Name
+ * @apiParam {string} [last_name] Last Name. Defaults to null
+ * @apiParam {boolean} [is_seller=false] Seller or Buyer. Defaults to false
+ * @apiParamExample {json} Input
+ *    {
+ *        "username": "student",
+ *        "password": "secretpassword",
+ *        "first_name": "Billy",
+ *        "last_name": "Thomas",
+ *        "is_seller": false
+ *    }
+ * @apiSuccess {integer} User ID
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 201 OK
+ *    {
+ *       "id": 5
+ *    }
+ * @apiErrorExample {json} Update error
+ *    HTTP/1.1 500 Internal Server Error
+ */
 router.post('/register', validateRegister, (req,res) => {
   req.body.username = req.body.username.toLowerCase();
   if (!req.body.is_seller) {
@@ -30,6 +78,23 @@ router.post('/register', validateRegister, (req,res) => {
     .catch(err => res.status(500).json({message:"Error registering user, try a different username"}));
 });
 
+/**
+ * @api {post} /api/auth/login Login
+ * @apiGroup Authorization
+ * @apiParam {string} username Username
+ * @apiParam {string} password Password
+ * @apiParamExample {json} Input
+ *    {
+ *        "username": "student",
+ *        "password": "secretpassword",
+ *    }
+ * @apiSuccess {string} Token
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 201 OK
+ *    {
+ *       "token": "sdf890eufjiasdlkjklsdj3asdfskdlfdkfjkeladsf"
+ *    }
+ */
 router.post('/login', (req,res) => {
   if (req.body) {
     if (req.body.username && req.body.password) {
