@@ -11,8 +11,8 @@ const helpers = require("../api/helpers")
 const server = express();
 
 server.use(helmet());
-server.use(express.json());
 server.use(cors());
+server.use(express.json());
 
 server.use("/api/auth", authRoutes);
 server.use("/api/auctions", helpers.verifyToken, auctionRoutes);
