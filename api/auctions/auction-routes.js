@@ -14,7 +14,7 @@ router.get('/', (req,res) => {
         const bid_count = bids.length;
         auctions[i].date_ending = new Date(auctions[i].date_ending);
         auctions[i].bid_count = bid_count;
-        auctions[i].current_price = bids[bid_count - 1].price;
+        auctions[i].current_price = (bid_count ? bids[bid_count - 1].price : auctions[i].starting_price)
         auctions[i].last_bid_date = new Date(bids[bid_count - 1].created_at);
       }
       res.status(200).json(auctions);
@@ -55,6 +55,8 @@ router.post("/", [isSeller, validateAuction] , (req,res) => {
 // Need to add more logic (when can you not edit the auction?)
 // What is editable thorughout the whole auction, vs what is editable after a bid is placed.
 router.put("/:id", [authOwner, validDate], (req,res) => {
+  const {user_id, ...rest} = req.body;
+  req.body = rest;
   Bids.getBidsByAuction(req.params.id)
     .then(bids => {
       // can't change starting price if there are bids on it already or title
