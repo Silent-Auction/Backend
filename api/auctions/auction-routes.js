@@ -4,6 +4,24 @@ const Auctions = require("./auction-model");
 const Bids = require("../bids/bids-model");
 const router = express.Router();
 
+
+router.get('/', (req,res) => {
+  Auctions.getAll()
+    .then(async auctions => {
+      for (i = 0; i < auctions.length; i++) {
+        const auction_id = auctions[i].id;
+        const bids = await Bids.getBidsByAuction(auction_id);
+        const bid_count = bids.length;
+        auctions[i].date_ending = new Date(auctions[i].date_ending);
+        auctions[i].bid_count = bid_count;
+        auctions[i].current_price = bids[bid_count - 1].price;
+        auctions[i].last_bid_date = new Date(bids[bid_count - 1].created_at);
+      }
+      res.status(200).json(auctions);
+    })
+    .catch(err => res.status(500).json({message: "Error retrieving from database."}));
+})
+
 // Get info for auction by ID. Includes current bids
 router.get('/:id', (req,res) => {
   Auctions.getAuction(req.params.id)
@@ -35,14 +53,24 @@ router.post("/", [isSeller, validateAuction] , (req,res) => {
 
 // Edit your auction. Checks token to see if you are the owner of auction.
 // Need to add more logic (when can you not edit the auction?)
-router.put("/:id", authOwner, (req,res) => {
-  Auctions.edit(req.params.id, req.body)
-    .then(records => res.status(201).json({records}))
-    .catch(err => res.status(500).json({message: "Error updating database"}))
+// What is editable thorughout the whole auction, vs what is editable after a bid is placed.
+router.put("/:id", [authOwner, validDate], (req,res) => {
+  Bids.getBidsByAuction(req.params.id)
+    .then(bids => {
+      // can't change starting price if there are bids on it already or title
+      if (bids.length) {
+        const {starting_price, name, ...rest} = req.body;
+        req.body = rest;
+      }
+      Auctions.edit(req.params.id, req.body)
+      .then(records => res.status(201).json({records}))
+      .catch(err => res.status(500).json({message: "Error updating database"}));
+    })
+    .catch(err => res.status(500).json({message: "Error retrieving from database"}));
 });
 
-// Delete auction
-router.delete("/:id", authOwner, (req,res) => {
+router.delete("/:id", [authOwner, validDate], (req,res) => {
+  Bids.getBidsByAuction(req.auction.id)
   Auctions.remove(req.params.id)
   .then(records => res.status(201).json({records}))
   .catch(err => res.status(500).json({message: "Error deleting from database"}))
@@ -89,4 +117,12 @@ function validateAuction(req, res, next) {
   }
 }
 
+function validDate(req, res, next) {
+  let date = new Date().getTime();
+  if (date < req.auction.date_ending) {
+    next();
+  } else {
+      res.status(400).json({message: "Auction is already over."})
+  }
+}
 module.exports = router;
