@@ -2,7 +2,6 @@ const express = require("express");
 
 const Users = require("./user-model");
 const Bids = require("../bids/bids-model");
-const Auctions = require("../auctions/auction-model");
 
 const router = express.Router();
 
