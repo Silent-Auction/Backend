@@ -28,6 +28,8 @@ router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, valid
 // Edit your bid. Checks token to see if you are the owner of bid.
 // Need to add more logic (when can you not edit the bid?)
 router.put("/:id", [authOwner, isLastBid, validateBid, findAuction, validDate, validPrice], (req,res) => {
+  const {id, auction_id, user_id, ...rest} = req.body;
+  req.body = rest;
   req.body.created_at = new Date();
   Bids.edit(req.params.id, req.body)
     .then(records => res.status(201).json({records}))

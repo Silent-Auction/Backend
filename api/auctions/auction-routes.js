@@ -55,7 +55,7 @@ router.post("/", [isSeller, validateAuction] , (req,res) => {
 // Need to add more logic (when can you not edit the auction?)
 // What is editable thorughout the whole auction, vs what is editable after a bid is placed.
 router.put("/:id", [authOwner, validDate], (req,res) => {
-  const {user_id, ...rest} = req.body;
+  const {user_id, id, ...rest} = req.body;
   req.body = rest;
   Bids.getBidsByAuction(req.params.id)
     .then(bids => {

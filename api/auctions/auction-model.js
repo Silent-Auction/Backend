@@ -37,7 +37,6 @@ function add(auction) {
 }
 
 function edit(id, auction) {
-  console.log({id})
   return db('auctions').update(auction).where({id})
 }
 
