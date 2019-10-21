@@ -2,7 +2,7 @@ define({ "api": [
   {
     "type": "delete",
     "url": "/api/auctions/:id",
-    "title": "Delete Auction",
+    "title": "Delete an auction",
     "group": "Auctions",
     "permission": [
       {
@@ -716,5 +716,148 @@ define({ "api": [
     "filename": "./auth/auth-routes.js",
     "groupTitle": "Authorization",
     "name": "PostApiAuthRegister"
+  },
+  {
+    "type": "get",
+    "url": "/api/auctions/:id",
+    "title": "Request Specific Bid",
+    "permission": [
+      {
+        "name": "Buyer or Seller"
+      }
+    ],
+    "group": "Bids",
+    "parameter": {
+      "fields": {
+        "params": [
+          {
+            "group": "params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Bid's unique ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "content": [
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>User ID of owner of auction</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auction_id",
+            "description": "<p>Starting price for item</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "starting_price",
+            "description": "<p>Starting price for item</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
+            "field": "created_at",
+            "description": "<p>Date of bid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success ",
+          "content": "HTTP/1.1 200 OK\n{\n   \"id\": 1,\n   \"user_id\": 2,\n   \"auction_id\": 1,\n   \"price\": 150,\n   \"created_at\": \"2019-10-19\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/bids/bids-routes.js",
+    "groupTitle": "Bids",
+    "name": "GetApiAuctionsId"
+  },
+  {
+    "type": "post",
+    "url": "/api/bids/:auction_id",
+    "title": "Place bid",
+    "parameter": {
+      "fields": {
+        "params": [
+          {
+            "group": "params",
+            "optional": false,
+            "field": "ID",
+            "description": "<p>of auction</p>"
+          }
+        ],
+        "content": [
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "price",
+            "description": "<p>Price of bid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Input",
+          "content": "{\n    \"price\": \"500,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "group": "Bids",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "integer",
+            "optional": false,
+            "field": "Bid",
+            "description": "<p>ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success",
+          "content": "HTTP/1.1 201 OK\n{\n   \"id\": 5\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Update error",
+          "content": "HTTP/1.1 500 Internal Server Error",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/bids/bids-routes.js",
+    "groupTitle": "Bids",
+    "name": "PostApiBidsAuction_id"
   }
 ] });
