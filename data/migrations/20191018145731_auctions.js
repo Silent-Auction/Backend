@@ -29,8 +29,6 @@ exports.up = function(knex) {
       .notNullable();
     tbl.string('image', 128)
       .notNullable();
-
-      
   })
   .createTable('auction_bids', tbl => {
     tbl.increments();
