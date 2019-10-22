@@ -2,7 +2,8 @@ const db = require("../data/dbconfig");
 
 module.exports = {
   register,
-  findUser
+  findUser,
+  getUser
 }
 
 function register(user) {
@@ -12,7 +13,13 @@ function register(user) {
 
 function findUser(username) {
   return db('users').where({username: username})
-    .then(users => users[0])
+    .select('id','username','first_name','last_name','is_seller as role')
+    .first();
+}
+
+function getUser(username) {
+  return db('users').where({username: username})
+    .first();
 }
 
 
