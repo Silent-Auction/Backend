@@ -17,6 +17,7 @@ const router = express.Router();
  * @apiSuccess {String} auctions.name Title of auction
  * @apiSuccess {String} auctions.description Description
  * @apiSuccess {Number} auctions.starting_price Starting price for item
+ * @apiSuccess (request) {Date} auctions.date_starting Start Date of Auction
  * @apiSuccess {Date} auctions.date_ending Ending date of auction
  * @apiSuccess {String} auctions.image Link to photo of image
  * @apiSuccess {Number} auctions.bid_count Number of bids placed
@@ -34,6 +35,7 @@ const router = express.Router();
 *         "name": "iPhone",
 *         "description": "A beautiful space gray iphone 11",
 *         "starting_price": 100,
+*         "date_starting": "2019-12-19T08:00:00.000Z"
 *         "date_ending": "2019-12-29T08:00:00.000Z",
 *         "image": "https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg",
 *         "bid_count": 4,
@@ -48,6 +50,7 @@ const router = express.Router();
 *         "name": "Pixel Plus",
 *         "description": "A Google Pixel",
 *         "starting_price": 100,
+*         "date_starting": "2019-10-19T08:00:00.000Z"
 *         "date_ending": "2019-10-20T07:00:00.000Z",
 *         "image": "https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg",
 *         "bid_count": 4,
@@ -90,6 +93,7 @@ router.get('/', (req,res) => {
  * @apiSuccess (content) {String} auction.name Title of auction
  * @apiSuccess (content) {String} auction.description Description
  * @apiSuccess (content) {Number} auction.starting_price Starting price for item
+ * @apiSuccess (content) {Date} auction.date_starting Starting date of auction
  * @apiSuccess (content) {Date} auction.date_ending Ending date of auction
  * @apiSuccess (content) {String} auction.image Link to photo of image
  * @apiSuccess (content) {Object[]} auction.bids Bids
@@ -108,6 +112,7 @@ router.get('/', (req,res) => {
  *  "name": "iPhone",
  *  "description": "A beautiful space gray iphone 11",
  *  "starting_price": 100,
+ *  "date_starting": "2019-12-19T08:00:00.000Z"
  *  "date_ending": "2019-12-29T08:00:00.000Z",
  *  "image": "https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg",
  *  "bids": [
@@ -158,6 +163,7 @@ router.get('/:id', (req,res) => {
  * @apiGroup Auctions
  * @apiParam (request) {String} name Name/Title of auction
  * @apiParam (request) {Number} starting_price Starting bid 
+ * @apiParam (request) {Date} date_starting Start Date of Auction
  * @apiParam (request) {Date} date_ending End Date of Auction
  * @apiParam (request) {String} [description] Description of product
  * @apiParam (request) {string} image URL to image
@@ -166,7 +172,7 @@ router.get('/:id', (req,res) => {
  *      "name": "iPhone",
  *      "starting_price": 50,
  *      "date_starting": "10/19/19",
- *      "date_ending": new Date(10/31/19),
+ *      "date_ending": "10/31/19",
  *      "description": "A brand new iPhone",
  *      "image": "https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg"
  *    }
@@ -181,7 +187,7 @@ router.get('/:id', (req,res) => {
  */
 // Add auction. Must have the seller role.
 router.post("/", [isSeller, validateAuction] , (req,res) => {
-  Auctions.add(req.auction)    .then(id => res.status(201).json({id}))
+  Auctions.add(req.auction).then(id => res.status(201).json({id}))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
 
@@ -191,19 +197,22 @@ router.post("/", [isSeller, validateAuction] , (req,res) => {
 /**
  * @api {put} /api/auctions/:id Edit an auction
  * @apiPermission Auction Owner
- * 
+ * @apiDescription Auctions cannot be edited after the end date has passed. You cannot edit the name, starting price, and start date of the 
+ * auction after a bid has been placed on it. 
  * @apiGroup Auctions
  * @apiParam (param) {Number} id ID of auction
- * @apiParam (content) {String} [name] Name/Title of auction. Cannot edit after a bid has been placed
- * @apiParam (content) {Number} [starting_price] Starting bid. Cannot edit after a bid has been placed
- * @apiParam (content) {Date} [date_ending] End Date of Auction
- * @apiParam (content) {String} [description] Description of product
- * @apiParam (content) {string} [image] URL to image
+ * @apiParam (request) {String} [name] Name/Title of auction. Cannot edit after a bid has been placed
+ * @apiParam (request) {Number} [starting_price] Starting bid. Cannot edit after a bid has been placed
+ * @apiParam (request) {Date} [date_starting] End Date of Auction. Cannot edit after a bid has been placed
+ * @apiParam (request) {Date} [date_ending] End Date of Auction
+ * @apiParam (request) {String} [description] Description of product
+ * @apiParam (request) {string} [image] URL to image
  * @apiParamExample {json} Input
  *    {
  *      "name": "iPhone",
  *      "starting_price": 50,
- *      "date_ending": new Date(10/31/19),
+ *      "date_starting": "10/21/19"
+ *      "date_ending": "10/30/19",
  *      "description": "A brand new iPhone",
  *      "image": "https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg"
  *    }
@@ -219,9 +228,9 @@ router.put("/:id", [authOwner, validDate], (req,res) => {
   req.body = rest;
   Bids.getBidsByAuction(req.params.id)
     .then(bids => {
-      // can't change starting price if there are bids on it already or title
+      // can't change starting price, title, date_starting if there are bids on it already
       if (bids.length) {
-        const {starting_price, name, ...rest} = req.body;
+        const {starting_price, name, date_starting, ...rest} = req.body;
         req.body = rest;
       }
       Auctions.edit(req.params.id, req.body)
@@ -282,8 +291,8 @@ function authOwner(req,res,next) {
 function validateAuction(req, res, next) {
   const auction = req.body;
   if (auction) {
-    if (!auction.name || !auction.starting_price || !auction.date_ending || !auction.image ) {
-      res.status(400).json({message: "Name, starting price, end date, and image URL is required."})
+    if (!auction.name || !auction.starting_price || !auction.date_ending || !auction.image || !auction.date_starting) {
+      res.status(400).json({message: "Name, starting price, end date, start date, and image URL is required."})
     } else {
       req.auction = {...auction, user_id: req.decoded.subject}
       next();

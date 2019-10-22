@@ -151,12 +151,21 @@
             "field": "auction.last_bid_date",
             "description": "<p>Time of last bid</p>"
           }
+        ],
+        "request": [
+          {
+            "group": "request",
+            "type": "Date",
+            "optional": false,
+            "field": "auctions.date_starting",
+            "description": "<p>Start Date of Auction</p>"
+          }
         ]
       },
       "examples": [
         {
           "title": "Success ",
-          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"seller\": \"testseller\",\n        \"first_name\": \"Test\",\n        \"name\": \"iPhone\",\n        \"description\": \"A beautiful space gray iphone 11\",\n        \"starting_price\": 100,\n        \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n        \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n        \"bid_count\": 4,\n        \"current_price\": 250,\n        \"last_bid_date\": \"2019-10-20T07:00:00.000Z\"\n    },\n    {\n        \"id\": 2,\n        \"user_id\": 1,\n        \"seller\": \"testseller\",\n        \"first_name\": \"Test\",\n        \"name\": \"Pixel Plus\",\n        \"description\": \"A Google Pixel\",\n        \"starting_price\": 100,\n        \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n        \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n        \"bid_count\": 4,\n        \"current_price\": 220,\n        \"last_bid_date\": \"2019-10-19T07:00:00.000Z\"\n    }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"seller\": \"testseller\",\n        \"first_name\": \"Test\",\n        \"name\": \"iPhone\",\n        \"description\": \"A beautiful space gray iphone 11\",\n        \"starting_price\": 100,\n        \"date_starting\": \"2019-12-19T08:00:00.000Z\"\n        \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n        \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n        \"bid_count\": 4,\n        \"current_price\": 250,\n        \"last_bid_date\": \"2019-10-20T07:00:00.000Z\"\n    },\n    {\n        \"id\": 2,\n        \"user_id\": 1,\n        \"seller\": \"testseller\",\n        \"first_name\": \"Test\",\n        \"name\": \"Pixel Plus\",\n        \"description\": \"A Google Pixel\",\n        \"starting_price\": 100,\n        \"date_starting\": \"2019-10-19T08:00:00.000Z\"\n        \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n        \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n        \"bid_count\": 4,\n        \"current_price\": 220,\n        \"last_bid_date\": \"2019-10-19T07:00:00.000Z\"\n    }\n]",
           "type": "json"
         }
       ]
@@ -254,6 +263,13 @@
             "group": "content",
             "type": "Date",
             "optional": false,
+            "field": "auction.date_starting",
+            "description": "<p>Starting date of auction</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
             "field": "auction.date_ending",
             "description": "<p>Ending date of auction</p>"
           },
@@ -311,7 +327,7 @@
       "examples": [
         {
           "title": "Success ",
-          "content": "HTTP/1.1 200 OK\n{\n \"id\": 1,\n \"user_id\": 1,\n \"seller\": \"testseller\",\n \"first_name\": \"Test\",\n \"name\": \"iPhone\",\n \"description\": \"A beautiful space gray iphone 11\",\n \"starting_price\": 100,\n \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n \"bids\": [\n     {\n         \"id\": 1,\n         \"username\": \"testseller2\",\n         \"first_name\": \"Test\",\n         \"price\": 150,\n         \"created_at\": \"2019-10-19T20:00:00.000Z\"\n     },\n     {\n         \"id\": 2,\n         \"username\": \"testbuyer\",\n         \"first_name\": \"Test\",\n         \"price\": 200,\n         \"created_at\": \"2019-10-19T22:00:00.000Z\"\n     },\n   ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n \"id\": 1,\n \"user_id\": 1,\n \"seller\": \"testseller\",\n \"first_name\": \"Test\",\n \"name\": \"iPhone\",\n \"description\": \"A beautiful space gray iphone 11\",\n \"starting_price\": 100,\n \"date_starting\": \"2019-12-19T08:00:00.000Z\"\n \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n \"bids\": [\n     {\n         \"id\": 1,\n         \"username\": \"testseller2\",\n         \"first_name\": \"Test\",\n         \"price\": 150,\n         \"created_at\": \"2019-10-19T20:00:00.000Z\"\n     },\n     {\n         \"id\": 2,\n         \"username\": \"testbuyer\",\n         \"first_name\": \"Test\",\n         \"price\": 200,\n         \"created_at\": \"2019-10-19T22:00:00.000Z\"\n     },\n   ]\n}",
           "type": "json"
         }
       ]
@@ -352,6 +368,13 @@
             "group": "request",
             "type": "Date",
             "optional": false,
+            "field": "date_starting",
+            "description": "<p>Start Date of Auction</p>"
+          },
+          {
+            "group": "request",
+            "type": "Date",
+            "optional": false,
             "field": "date_ending",
             "description": "<p>End Date of Auction</p>"
           },
@@ -374,7 +397,7 @@
       "examples": [
         {
           "title": "Input",
-          "content": "{\n  \"name\": \"iPhone\",\n  \"starting_price\": 50,\n  \"date_ending\": new Date(10/31/19),\n  \"description\": \"A brand new iPhone\",\n  \"image\": \"https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg\"\n}",
+          "content": "{\n  \"name\": \"iPhone\",\n  \"starting_price\": 50,\n  \"date_starting\": \"10/19/19\",\n  \"date_ending\": \"10/31/19\",\n  \"description\": \"A brand new iPhone\",\n  \"image\": \"https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -422,6 +445,7 @@
         "name": "Auction Owner"
       }
     ],
+    "description": "<p>Auctions cannot be edited after the end date has passed. You cannot edit the name, starting price, and start date of the auction after a bid has been placed on it.</p>",
     "group": "Auctions",
     "parameter": {
       "fields": {
@@ -434,37 +458,44 @@
             "description": "<p>ID of auction</p>"
           }
         ],
-        "content": [
+        "request": [
           {
-            "group": "content",
+            "group": "request",
             "type": "String",
             "optional": true,
             "field": "name",
             "description": "<p>Name/Title of auction. Cannot edit after a bid has been placed</p>"
           },
           {
-            "group": "content",
+            "group": "request",
             "type": "Number",
             "optional": true,
             "field": "starting_price",
             "description": "<p>Starting bid. Cannot edit after a bid has been placed</p>"
           },
           {
-            "group": "content",
+            "group": "request",
+            "type": "Date",
+            "optional": true,
+            "field": "date_starting",
+            "description": "<p>End Date of Auction. Cannot edit after a bid has been placed</p>"
+          },
+          {
+            "group": "request",
             "type": "Date",
             "optional": true,
             "field": "date_ending",
             "description": "<p>End Date of Auction</p>"
           },
           {
-            "group": "content",
+            "group": "request",
             "type": "String",
             "optional": true,
             "field": "description",
             "description": "<p>Description of product</p>"
           },
           {
-            "group": "content",
+            "group": "request",
             "type": "string",
             "optional": true,
             "field": "image",
@@ -475,7 +506,7 @@
       "examples": [
         {
           "title": "Input",
-          "content": "{\n  \"name\": \"iPhone\",\n  \"starting_price\": 50,\n  \"date_ending\": new Date(10/31/19),\n  \"description\": \"A brand new iPhone\",\n  \"image\": \"https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg\"\n}",
+          "content": "{\n  \"name\": \"iPhone\",\n  \"starting_price\": 50,\n  \"date_starting\": \"10/21/19\"\n  \"date_ending\": \"10/30/19\",\n  \"description\": \"A brand new iPhone\",\n  \"image\": \"https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg\"\n}",
           "type": "json"
         }
       ]
@@ -1064,6 +1095,13 @@
             "group": "content",
             "type": "Date",
             "optional": false,
+            "field": "auctions.date_starting",
+            "description": "<p>Starting date</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
             "field": "auctions.date_ending",
             "description": "<p>Ending date</p>"
           },
@@ -1093,7 +1131,7 @@
       "examples": [
         {
           "title": "Success ",
-          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 1,\n    \"username\": \"testseller\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Seller\",\n    \"role\": \"seller\",\n    \"auctions\": [\n        {\n            \"id\": 1,\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"starting_price\": 100,\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"starting_price\": 100,\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 1,\n    \"username\": \"testseller\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Seller\",\n    \"role\": \"seller\",\n    \"auctions\": [\n        {\n            \"id\": 1,\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"starting_price\": 100,\n            \"date_starting\": \"2019-10-10T08:00:00.000Z\",\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"starting_price\": 100,\n            \"date_starting\": \"2019-10-10T08:00:00.000Z\",\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -1191,6 +1229,13 @@
             "group": "content",
             "type": "Date",
             "optional": false,
+            "field": "auctions.date_starting",
+            "description": "<p>Starting date</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
             "field": "auctions.date_ending",
             "description": "<p>Ending date</p>"
           },
@@ -1241,7 +1286,7 @@
       "examples": [
         {
           "title": "Success ",
-          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 3,\n    \"username\": \"testbuyer\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Buyer\",\n    \"role\": \"buyer\",\n    \"auctions\": [\n        {\n            \"auction_id\": 1,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_id\": 4,\n            \"bid_date\": \"2019-10-20T07:00:00.000Z\",\n            \"your_recent_bid\": 250,\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"auction_id\": 2,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_id\": 8,\n            \"bid_date\": \"2019-10-19T07:00:00.000Z\",\n            \"your_recent_bid\": 220,\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 3,\n    \"username\": \"testbuyer\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Buyer\",\n    \"role\": \"buyer\",\n    \"auctions\": [\n        {\n            \"auction_id\": 1,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"date_starting\": \"2019-12-20T08:00:00.000Z\",\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_id\": 4,\n            \"bid_date\": \"2019-10-20T07:00:00.000Z\",\n            \"your_recent_bid\": 250,\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"auction_id\": 2,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"date_starting\": \"2019-10-18T08:00:00.000Z\",\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_id\": 8,\n            \"bid_date\": \"2019-10-19T07:00:00.000Z\",\n            \"your_recent_bid\": 220,\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
           "type": "json"
         }
       ]

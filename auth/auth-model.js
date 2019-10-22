@@ -8,7 +8,7 @@ module.exports = {
 
 function register(user) {
   return db('users').insert(user)
-    .then(id => {return {id:id[0]}});
+    .then(id => id[0]);
 }
 
 function findUser(username) {
