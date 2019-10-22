@@ -718,6 +718,58 @@ define({ "api": [
     "name": "PostApiAuthRegister"
   },
   {
+    "type": "delete",
+    "url": "/api/bids/:id",
+    "title": "Delete bid",
+    "parameter": {
+      "fields": {
+        "params": [
+          {
+            "group": "params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of bid. Can only delete if it is the most recent bid on auction</p>"
+          }
+        ]
+      }
+    },
+    "group": "Bids",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "integer",
+            "optional": false,
+            "field": "records",
+            "description": "<p>Count of entries deleted</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success",
+          "content": "HTTP/1.1 201 OK\n{\n   \"records\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "HTTP/1.1 500 Internal Server Error",
+          "content": "HTTP/1.1 500 Internal Server Error",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/bids/bids-routes.js",
+    "groupTitle": "Bids",
+    "name": "DeleteApiBidsId"
+  },
+  {
     "type": "get",
     "url": "/api/auctions/:id",
     "title": "Request Specific Bid",
@@ -802,9 +854,10 @@ define({ "api": [
         "params": [
           {
             "group": "params",
+            "type": "Number",
             "optional": false,
-            "field": "ID",
-            "description": "<p>of auction</p>"
+            "field": "auction_id",
+            "description": "<p>ID of auction</p>"
           }
         ],
         "content": [
@@ -813,14 +866,14 @@ define({ "api": [
             "type": "Number",
             "optional": false,
             "field": "price",
-            "description": "<p>Price of bid</p>"
+            "description": "<p>Price of bid. Cannot place bid that is lower than current bid price, or on an auction that has ended already.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Input",
-          "content": "{\n    \"price\": \"500,\n}",
+          "content": "{\n    \"price\": 500,\n}",
           "type": "json"
         }
       ]
@@ -849,7 +902,7 @@ define({ "api": [
     "error": {
       "examples": [
         {
-          "title": "Update error",
+          "title": "HTTP/1.1 500 Internal Server Error",
           "content": "HTTP/1.1 500 Internal Server Error",
           "type": "json"
         }
@@ -859,5 +912,73 @@ define({ "api": [
     "filename": "./api/bids/bids-routes.js",
     "groupTitle": "Bids",
     "name": "PostApiBidsAuction_id"
+  },
+  {
+    "type": "put",
+    "url": "/api/bids/:id",
+    "title": "Edit bid",
+    "parameter": {
+      "fields": {
+        "params": [
+          {
+            "group": "params",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of bid</p>"
+          }
+        ],
+        "content": [
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "price",
+            "description": "<p>Price of bid. Cannot place bid that is lower than current bid price. You can only edit a bid if it is the most recent bid.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Input",
+          "content": "{\n    \"price\": 500,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "group": "Bids",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "integer",
+            "optional": false,
+            "field": "records",
+            "description": "<p>Count of records updated</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success",
+          "content": "HTTP/1.1 201 OK\n{\n   \"id\": 5\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "HTTP/1.1 500 Internal Server Error",
+          "content": "HTTP/1.1 500 Internal Server Error",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/bids/bids-routes.js",
+    "groupTitle": "Bids",
+    "name": "PutApiBidsId"
   }
 ] });
