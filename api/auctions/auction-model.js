@@ -12,7 +12,7 @@ module.exports = {
 function getAuction(id) {
   return db('auctions as a')
     .join('users', 'users.id', 'a.user_id')
-    .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_ending', 'a.image')
+    .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description','a.starting_price','a.date_starting', 'a.date_ending', 'a.image')
     .whereRaw(`a.id = ${id}`)
     .first();
 }
@@ -20,7 +20,7 @@ function getAuction(id) {
 function getAll() {
   return db('auctions as a')
   .join('users', 'users.id', 'a.user_id')
-  .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_ending', 'a.image')
+  .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_starting', 'a.date_ending', 'a.image')
 }
 
 function getHighestBid(auction_id) {

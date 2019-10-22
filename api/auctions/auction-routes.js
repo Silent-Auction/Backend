@@ -66,6 +66,7 @@ router.get('/', (req,res) => {
         const bids = await Bids.getBidsByAuction(auction_id);
         const bid_count = bids.length;
         auctions[i].date_ending = new Date(auctions[i].date_ending);
+        auctions[i].date_starting = new Date(auctions[i].date_starting);
         auctions[i].bid_count = bid_count;
         auctions[i].current_price = (bid_count ? bids[bid_count - 1].price : auctions[i].starting_price)
         auctions[i].last_bid_date = new Date(bids[bid_count - 1].created_at);
@@ -131,7 +132,8 @@ router.get('/', (req,res) => {
 router.get('/:id', (req,res) => {
   Auctions.getAuction(req.params.id)
     .then(auction => {
-      if (auction) { 
+      if (auction) {
+        auction.date_starting = new Date(auction.date_starting);
         auction.date_ending = new Date(auction.date_ending);
         Bids.getBidsByAuction(auction.id)
           .then(bids => {
@@ -163,6 +165,7 @@ router.get('/:id', (req,res) => {
  *    {
  *      "name": "iPhone",
  *      "starting_price": 50,
+ *      "date_starting": "10/19/19",
  *      "date_ending": new Date(10/31/19),
  *      "description": "A brand new iPhone",
  *      "image": "https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg"
