@@ -22,14 +22,14 @@ exports.up = function(knex) {
       .inTable('users');
     tbl.string('name', 128)
       .notNullable();
-    tbl.string('description', 128)
+    tbl.string('description', 1000)
     tbl.integer('starting_price')
       .notNullable();
     tbl.date('date_starting')
       .notNullable();
     tbl.date('date_ending')
       .notNullable();
-    tbl.string('image', 128)
+    tbl.string('image', 500)
       .notNullable();
   })
   .createTable('auction_bids', tbl => {
