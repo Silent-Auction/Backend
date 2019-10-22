@@ -721,6 +721,7 @@
     "type": "delete",
     "url": "/api/bids/:id",
     "title": "Delete bid",
+    "description": "<p>Can only delete if it is the most recent bid on auction</p>",
     "parameter": {
       "fields": {
         "params": [
@@ -729,7 +730,7 @@
             "type": "Number",
             "optional": false,
             "field": "id",
-            "description": "<p>ID of bid. Can only delete if it is the most recent bid on auction</p>"
+            "description": "<p>ID of bid.</p>"
           }
         ]
       }
@@ -878,6 +879,7 @@
         }
       ]
     },
+    "description": "<p>Bid must be higher than the current price, and bid must be placed before auction ends.</p>",
     "group": "Bids",
     "success": {
       "fields": {
@@ -932,7 +934,7 @@
           {
             "group": "content",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "price",
             "description": "<p>Price of bid. Cannot place bid that is lower than current bid price. You can only edit a bid if it is the most recent bid.</p>"
           }
@@ -946,6 +948,7 @@
         }
       ]
     },
+    "description": "<p>Can only edit if it is the most recent bid on auction. New bid must be the current highest price, and must be placed before auction is over</p>",
     "group": "Bids",
     "success": {
       "fields": {
@@ -980,5 +983,271 @@
     "filename": "./api/bids/bids-routes.js",
     "groupTitle": "Bids",
     "name": "PutApiBidsId"
+  },
+  {
+    "type": "get",
+    "url": "/api/users/",
+    "title": "Request User Information (Seller)",
+    "permission": [
+      {
+        "name": "Buyer or Seller"
+      }
+    ],
+    "group": "Users",
+    "success": {
+      "fields": {
+        "content": [
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "first_name",
+            "description": "<p>First Name</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "last_name",
+            "description": "<p>Last Name</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "role",
+            "description": "<p>Role of user</p>"
+          },
+          {
+            "group": "content",
+            "type": "Object[]",
+            "optional": false,
+            "field": "auctions",
+            "description": "<p>Auctions owned by seller</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.id",
+            "description": "<p>Auction ID</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auctions.name",
+            "description": "<p>Title/name of auction</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.starting_price",
+            "description": "<p>Starting price</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
+            "field": "auctions.date_ending",
+            "description": "<p>Ending date</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auctions.image",
+            "description": "<p>Link to image of item sold</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.bid_count",
+            "description": "<p>Number of placed bids</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.current_price",
+            "description": "<p>Current bid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success ",
+          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 1,\n    \"username\": \"testseller\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Seller\",\n    \"role\": \"seller\",\n    \"auctions\": [\n        {\n            \"id\": 1,\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"starting_price\": 100,\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"starting_price\": 100,\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/users/user-router.js",
+    "groupTitle": "Users",
+    "name": "GetApiUsers"
+  },
+  {
+    "type": "get",
+    "url": "/api/users/",
+    "title": "Request User Information (Buyer)",
+    "permission": [
+      {
+        "name": "Buyer or Seller"
+      }
+    ],
+    "name": "getBuyer",
+    "group": "Users",
+    "success": {
+      "fields": {
+        "content": [
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "first_name",
+            "description": "<p>First Name</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "last_name",
+            "description": "<p>Last Name</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "role",
+            "description": "<p>Role of user</p>"
+          },
+          {
+            "group": "content",
+            "type": "Object[]",
+            "optional": false,
+            "field": "auctions",
+            "description": "<p>Auctions owned by seller</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.id",
+            "description": "<p>Auction ID</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auctions.sold_by_user",
+            "description": "<p>Username of seller</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auction.sold_by",
+            "description": "<p>First name of seller</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auctions.name",
+            "description": "<p>Title/name of auction</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
+            "field": "auctions.date_ending",
+            "description": "<p>Ending date</p>"
+          },
+          {
+            "group": "content",
+            "type": "String",
+            "optional": false,
+            "field": "auctions.image",
+            "description": "<p>Link to image of item sold</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.bid_id",
+            "description": "<p>ID of user's most recent bid</p>"
+          },
+          {
+            "group": "content",
+            "type": "Date",
+            "optional": false,
+            "field": "auctions.bid_date",
+            "description": "<p>Date of user's most recent bid</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.your_recent_bid",
+            "description": "<p>User's most recent bid</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.bid_count",
+            "description": "<p>Number of bids on auction</p>"
+          },
+          {
+            "group": "content",
+            "type": "Number",
+            "optional": false,
+            "field": "auctions.current_price",
+            "description": "<p>Current bid</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success ",
+          "content": "HTTP/1.1 200 OK\n{\n    \"id\": 3,\n    \"username\": \"testbuyer\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"Buyer\",\n    \"role\": \"buyer\",\n    \"auctions\": [\n        {\n            \"auction_id\": 1,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"iPhone\",\n            \"description\": \"A beautiful space gray iphone 11\",\n            \"date_ending\": \"2019-12-29T08:00:00.000Z\",\n            \"image\": \"https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg\",\n            \"bid_id\": 4,\n            \"bid_date\": \"2019-10-20T07:00:00.000Z\",\n            \"your_recent_bid\": 250,\n            \"bid_count\": 4,\n            \"current_price\": 250\n        },\n        {\n            \"auction_id\": 2,\n            \"sold_by_user\": \"testseller\",\n            \"sold_by\": \"Test\",\n            \"name\": \"Pixel Plus\",\n            \"description\": \"A Google Pixel\",\n            \"date_ending\": \"2019-10-20T07:00:00.000Z\",\n            \"image\": \"https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg\",\n            \"bid_id\": 8,\n            \"bid_date\": \"2019-10-19T07:00:00.000Z\",\n            \"your_recent_bid\": 220,\n            \"bid_count\": 4,\n            \"current_price\": 220\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./api/users/user-router.js",
+    "groupTitle": "Users"
   }
 ]

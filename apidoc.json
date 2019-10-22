@@ -1,8 +1,10 @@
 {
-  "name": "Silent Auction API Documentation",
+  "title": "Silent Auction API Documentation",
+  "name": "Silent Auction API",
   "version": "1.0.0",
   "description": "Sellers can post items for auction, buyers can bid on items!",
   "template": {
       "forceLanguage": "en"
-  }
+  },
+  "url": "https://silent-auction-bw.herokuapp.com"
 }

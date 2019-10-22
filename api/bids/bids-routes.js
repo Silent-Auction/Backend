@@ -7,7 +7,6 @@ const router = express.Router();
 /**
  * @api {get} /api/auctions/:id Request Specific Bid
  * @apiPermission Buyer or Seller
- * 
  * @apiGroup Bids
  * 
  * @apiParam (params) {Number} id Bid's unique ID 
@@ -42,6 +41,7 @@ router.get("/:id", (req,res) => {
 /**
  * @api {post} /api/bids/:auction_id Place bid
  * @apiParam (params) {Number} auction_id ID of auction
+ * @apiDescription Bid must be higher than the current price, and bid must be placed before auction ends.
  * @apiGroup Bids
  * @apiParam (content) {Number} price Price of bid. Cannot place bid that is lower than current bid price, or on an auction that has ended already.
  * @apiParamExample {json} Input
@@ -58,6 +58,7 @@ router.get("/:id", (req,res) => {
  *    HTTP/1.1 500 Internal Server Error
  *    
  */
+
 // Add bid to auction, must have buyer role, valid auctoin, and auction must not be over. 
 router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, validPrice] , (req,res) => {
   req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
@@ -69,6 +70,8 @@ router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, valid
 /**
  * @api {put} /api/bids/:id Edit bid
  * @apiParam (params) {Number} id ID of bid
+ * @apiDescription Can only edit if it is the most recent bid on auction.
+ * New bid must be the current highest price, and must be placed before auction is over
  * @apiGroup Bids
  * @apiParam (content) {Number} [price] Price of bid. Cannot place bid that is lower than current bid price. You can only edit a bid if it is the most recent bid.
  * @apiParamExample {json} Input
@@ -99,7 +102,8 @@ router.put("/:id", [authOwner, isLastBid, validateBid, findAuction, validDate, v
 
 /**
  * @api {delete} /api/bids/:id Delete bid
- * @apiParam (params) {Number} id ID of bid. Can only delete if it is the most recent bid on auction
+ * @apiDescription Can only delete if it is the most recent bid on auction
+ * @apiParam (params) {Number} id ID of bid.
  * @apiGroup Bids
  * @apiSuccess {integer} records Count of entries deleted
  * @apiSuccessExample {json} Success
@@ -111,7 +115,6 @@ router.put("/:id", [authOwner, isLastBid, validateBid, findAuction, validDate, v
  *    HTTP/1.1 500 Internal Server Error
  *    
  */
-
 // Delete bid. Also requires logic
 router.delete("/:id", [authOwner, isLastBid, findAuction, validDate], (req,res) => {
   Bids.remove(req.params.id)

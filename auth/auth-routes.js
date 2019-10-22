@@ -99,8 +99,9 @@ router.post('/login', (req,res) => {
   if (req.body) {
     if (req.body.username && req.body.password) {
       req.body.username = req.body.username.toLowerCase();
-      Users.findUser(req.body.username)
+      Users.getUser(req.body.username)
         .then(user => {
+          console.log(user);
           if (user && bcrypt.compareSync(req.body.password, user.password)) {
             const token = generateToken(user);
             res.status(201).json({token});
