@@ -25,6 +25,8 @@ exports.up = function(knex) {
     tbl.string('description', 128)
     tbl.integer('starting_price')
       .notNullable();
+    tbl.date('date_starting')
+      .notNullable();
     tbl.date('date_ending')
       .notNullable();
     tbl.string('image', 128)

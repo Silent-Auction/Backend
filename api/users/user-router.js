@@ -21,6 +21,7 @@ const router = express.Router();
  * @apiSuccess (content) {Number} auctions.id Auction ID
  * @apiSuccess (content) {String} auctions.name Title/name of auction
  * @apiSuccess (content) {Number} auctions.starting_price Starting price
+ * @apiSuccess (content) {Date} auctions.date_starting Starting date 
  * @apiSuccess (content) {Date} auctions.date_ending Ending date 
  * @apiSuccess (content) {String} auctions.image Link to image of item sold
  * @apiSuccess (content) {Number} auctions.bid_count Number of placed bids
@@ -39,6 +40,7 @@ const router = express.Router();
             "name": "iPhone",
             "description": "A beautiful space gray iphone 11",
             "starting_price": 100,
+            "date_starting": "2019-10-10T08:00:00.000Z",
             "date_ending": "2019-12-29T08:00:00.000Z",
             "image": "https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg",
             "bid_count": 4,
@@ -49,6 +51,7 @@ const router = express.Router();
             "name": "Pixel Plus",
             "description": "A Google Pixel",
             "starting_price": 100,
+            "date_starting": "2019-10-10T08:00:00.000Z",
             "date_ending": "2019-10-20T07:00:00.000Z",
             "image": "https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg",
             "bid_count": 4,
@@ -96,6 +99,7 @@ router.get("/", (req, res) => {
  * @apiSuccess (content) {String} auctions.sold_by_user Username of seller
  * @apiSuccess (content) {String} auction.sold_by First name of seller
  * @apiSuccess (content) {String} auctions.name Title/name of auction
+ * @apiSuccess (content) {Date} auctions.date_starting Starting date 
  * @apiSuccess (content) {Date} auctions.date_ending Ending date 
  * @apiSuccess (content) {String} auctions.image Link to image of item sold
  * @apiSuccess (content) {Number} auctions.bid_id ID of user's most recent bid
@@ -118,6 +122,7 @@ router.get("/", (req, res) => {
             "sold_by": "Test",
             "name": "iPhone",
             "description": "A beautiful space gray iphone 11",
+            "date_starting": "2019-12-20T08:00:00.000Z",
             "date_ending": "2019-12-29T08:00:00.000Z",
             "image": "https://cdn.tmobile.com/content/dam/t-mobile/en-p/cell-phones/apple/Apple-iPhone-11-Pro/Midnight-Green/Apple-iPhone-11-Pro-Midnight-Green-frontimage.jpg",
             "bid_id": 4,
@@ -132,6 +137,7 @@ router.get("/", (req, res) => {
             "sold_by": "Test",
             "name": "Pixel Plus",
             "description": "A Google Pixel",
+            "date_starting": "2019-10-18T08:00:00.000Z",
             "date_ending": "2019-10-20T07:00:00.000Z",
             "image": "https://static.bhphoto.com/images/images1000x1000/1550057716_1448921.jpg",
             "bid_id": 8,
@@ -147,6 +153,7 @@ router.get("/", (req, res) => {
 async function setAuctionInfo(auctions) {
   const newAuctions = await auctions.map(async (auction, idx) => {
     auction.date_ending = new Date(auction.date_ending);
+    auction.date_starting = new Date(auction.date_starting);
     if (auction.bid_date) {
       auction.bid_date = new Date(auction.bid_date);
     }
