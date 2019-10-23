@@ -177,7 +177,8 @@ function findAuction(req, res, next) {
 
 function validDate(req, res, next) {
   let date = new Date().getTime();
-  if (date < req.auction.date_ending) {
+  let date_ending = new Date(req.auction.date_ending).getTime();
+  if (date < date_ending) {
     next();
   } else {
       res.status(400).json({message: "Auction is already over."})

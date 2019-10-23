@@ -40,7 +40,6 @@ function edit(id, auction) {
 }
 
 function remove(id) {
-  console.log(bid);
   return db('auctions')
     .where({id})
     .del();
