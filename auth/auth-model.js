@@ -7,8 +7,7 @@ module.exports = {
 }
 
 function register(user) {
-  return db('users').insert(user)
-    .then(id => id[0]);
+  return db('users').insert(user, ['id'])
 }
 
 function findUser(username) {

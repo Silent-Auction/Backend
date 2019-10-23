@@ -24,8 +24,7 @@ function getBidsByAuction(auction_id) {
 }
 
 function add(bid) {
-  return db('auction_bids').insert(bid)
-    .then(ids => ids[0])
+  return db('auction_bids').insert(bid, ['id'])
 }
 
 function getLastBid(auction_id) {

@@ -188,7 +188,7 @@ router.get('/:id', (req,res) => {
  */
 // Add auction. Must have the seller role.
 router.post("/", [isSeller, validateAuction] , (req,res) => {
-  Auctions.add(req.auction).then(id => res.status(201).json({id}))
+  Auctions.add(req.auction).then(id => res.status(201).json(id[0]))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
 

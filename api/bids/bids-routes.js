@@ -63,7 +63,7 @@ router.get("/:id", (req,res) => {
 router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, validPrice] , (req,res) => {
   req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
   Bids.add(req.bid)
-    .then(id => res.status(201).json({id}))
+    .then(id => res.status(201).json(id[0]))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
 
