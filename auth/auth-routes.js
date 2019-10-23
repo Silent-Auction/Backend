@@ -74,7 +74,7 @@ router.post('/register', validateRegister, (req,res) => {
   const hash = bcrypt.hashSync(password, 12);
   req.body.password = hash;
   Users.register(req.body)
-    .then(id => res.status(201).json({id}))
+    .then(ids => res.status(201).json({id: ids[0]}))
     .catch(err => res.status(500).json({message:"Error registering user, try a different username"}));
 });
 
