@@ -32,8 +32,7 @@ function getHighestBid(auction_id) {
 }
 
 function add(auction) {
-  return db('auctions').insert(auction)
-    .then(ids => ids[0])
+  return db('auctions').insert(auction, ['id'])
 }
 
 function edit(id, auction) {
