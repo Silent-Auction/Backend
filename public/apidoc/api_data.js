@@ -538,7 +538,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/",
+    "url": "/api/auth",
     "title": "Get personal user info",
     "group": "Authorization",
     "success": {
@@ -601,7 +601,7 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "./auth/auth-routes.js",
     "groupTitle": "Authorization",
-    "name": "Get"
+    "name": "GetApiAuth"
   },
   {
     "type": "post",
