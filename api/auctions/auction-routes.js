@@ -72,7 +72,8 @@ router.get('/', (req,res) => {
         auctions[i].date_starting = new Date(auctions[i].date_starting);
         auctions[i].bid_count = bid_count;
         auctions[i].current_price = (bid_count ? bids[bid_count - 1].price : auctions[i].starting_price)
-        auctions[i].last_bid_date = new Date(bids[bid_count - 1].created_at);
+        
+        auctions[i].last_bid_date = ( bid_count ? new Date(bids[bid_count - 1].created_at) : auctions[i].date_starting);
       }
       res.status(200).json(auctions);
     })
