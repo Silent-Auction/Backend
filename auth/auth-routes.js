@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 /**
- * @api {get} / Get personal user info
+ * @api {get} /api/auth Get personal user info
  * @apiGroup Authorization
  * @apiSuccess {Number} user.id User id
  * @apiSuccess {String} user.username Username
