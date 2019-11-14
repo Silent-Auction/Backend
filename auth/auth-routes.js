@@ -73,8 +73,11 @@ router.post('/register', validateRegister, (req,res) => {
   const { password } = req.body;
   const hash = bcrypt.hashSync(password, 12);
   req.body.password = hash;
-  const token = generateToken(hash, req.body.username)
+  const user = getUser(req.body.username)
+  const token = ''
   Users.register(req.body)
+    .then(async() =>{
+      user = await getUser(req.body.username); token = generateToken(user)})
     .then(id => res.status(201).json({id:id[0], 
     token: token}))
     .catch(err => res.status(500).json({message:"Error registering user, try a different username"}));
