@@ -18,8 +18,6 @@ exports.up = function(knex) {
     tbl.integer('user_id')
       .unsigned()
       .notNullable()
-      .references('id')
-      .inTable('users');
     tbl.string('name', 128)
       .notNullable();
     tbl.string('description', 1000)
@@ -37,13 +35,9 @@ exports.up = function(knex) {
     tbl.integer('user_id')
       .unsigned()
       .notNullable()
-      .references("id")
-      .inTable('users');
     tbl.integer('auction_id')
       .unsigned()
       .notNullable()
-      .references("id")
-      .inTable('auctions')
     tbl.integer('price')
       .unsigned()
       .notNullable();
