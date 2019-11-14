@@ -59,7 +59,7 @@ module.exports = {
 
   production: {
     client: 'sqlite3',
-    connection: process.env.DATABASE_URL,
+    connection: './data/auctions.db3',
     pool: {
       min: 2,
       max: 10
