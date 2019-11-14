@@ -62,7 +62,7 @@ router.get('/', helpers.verifyToken, (req,res) => {
  * @apiErrorExample {json} Update error
  *    HTTP/1.1 500 Internal Server Error
  */
-router.post('/register', validateRegister, (req,res) => {
+router.post('/register', validateRegister,  (req,res) => {
   req.body.username = req.body.username.toLowerCase();
   if (!req.body.is_seller) {
     req.body.is_seller = false
@@ -73,13 +73,9 @@ router.post('/register', validateRegister, (req,res) => {
   const { password } = req.body;
   const hash = bcrypt.hashSync(password, 12);
   req.body.password = hash;
-  const user = getUser(req.body.username)
-  const token = ''
   Users.register(req.body)
-    .then(async() =>{
-      user = await getUser(req.body.username); token = generateToken(user)})
-    .then(id => res.status(201).json({id:id[0], 
-    token: token}))
+    .then(async(id) =>{
+      let user = await Users.getUser(req.body.username); const token = generateToken(user); res.status(201).json({id:id[0], token})})
     .catch(err => res.status(500).json({message:"Error registering user, try a different username"}));
 });
 
