@@ -73,7 +73,7 @@ router.post('/register', validateRegister, (req,res) => {
   const { password } = req.body;
   const hash = bcrypt.hashSync(password, 12);
   req.body.password = hash;
-  const token = generateToken(req.body.password, req.body.username)
+  const token = generateToken(hash, req.body.username)
   Users.register(req.body)
     .then(id => res.status(201).json({id:id[0], 
     token: token})
