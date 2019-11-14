@@ -76,7 +76,7 @@ router.post('/register', validateRegister, (req,res) => {
   const token = generateToken(hash, req.body.username)
   Users.register(req.body)
     .then(id => res.status(201).json({id:id[0], 
-    token: token})
+    token: token}))
     .catch(err => res.status(500).json({message:"Error registering user, try a different username"}));
 });
 
