@@ -2,6 +2,7 @@ const express = require("express");
 
 const Auctions = require("./auction-model");
 const Bids = require("../bids/bids-model");
+const helpers = require("../helpers");
 const router = express.Router();
 
 
@@ -157,6 +158,7 @@ router.get('/:id', (req,res) => {
     .catch(err => res.status(500).json({message: "Error retrieving from database."}));
 });
 
+router.use(helpers.verifyToken);
 /**
  * @api {post} /api/auctions/ Add an auction
  * @apiPermission Seller
