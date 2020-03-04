@@ -16,7 +16,7 @@ server.use(express.json());
 
 server.use(express.static('public'));
 server.use("/api/auth", authRoutes);
-server.use("/api/auctions", helpers.verifyToken, auctionRoutes);
+server.use("/api/auctions", auctionRoutes);
 server.use("/api/bids", helpers.verifyToken, bidsRoutes);
 server.use("/api/users", helpers.verifyToken, userRoutes);
 server.get("/", (req,res) => {
