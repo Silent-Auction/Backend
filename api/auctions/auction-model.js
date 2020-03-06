@@ -23,20 +23,18 @@ function getAll() {
   .select('a.id', 'a.user_id', 'users.username as seller', 'users.first_name', 'a.name', 'a.description', 'a.starting_price','a.date_starting', 'a.date_ending', 'a.image')
 }
 
-function getHighestBid(auction_id) {
-  try { 
-    return db('auction_bids as ab')
+async function getHighestBid(auction_id) {
+  let auction;
+  auction = await db('auction_bids as ab')
     .where({auction_id})
     .orderBy('price', 'desc')
     .select('ab.price')
-    .first()
-  } catch {
-    return db('auctions')
+    .first() || await db('auctions')
       .where({id: auction_id})
-      .select('starting_price')
-  }
+      .select('starting_price as price')
+      .first();
+  return auction;
 }
-
 function add(auction) {
   return db('auctions').insert(auction, ['id'])
 }
