@@ -24,11 +24,17 @@ function getAll() {
 }
 
 function getHighestBid(auction_id) {
-  return db('auction_bids as ab')
+  try { 
+    return db('auction_bids as ab')
     .where({auction_id})
     .orderBy('price', 'desc')
     .select('ab.price')
     .first()
+  } catch {
+    return db('auctions')
+      .where({id: auction_id})
+      .select('starting_price')
+  }
 }
 
 function add(auction) {
