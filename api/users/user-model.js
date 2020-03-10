@@ -19,24 +19,25 @@ function getSellerAuctions(user_id) {
     .select('id','name','description','starting_price','date_starting', 'date_ending','image')
 }
 
-async function getBuyerAuctions(user_id) {
-    const auctions = await db('auction_bids')
+function getBuyerAuctions(user_id) {
+    return db('auction_bids')
       .whereRaw(`auction_bids.user_id = ${user_id}`)
       .join('auctions as a', 'auction_bids.auction_id', 'a.id')
       .join('users as u', 'a.user_id', 'u.id')
       .select('a.id', 'u.username as sold_by_user', 'u.first_name as sold_by', 'a.name', 'a.description', 'a.date_starting', 'a.date_ending', 'a.image')
-      .groupBy('auction_bids.auction_id')
-    const newAuctions = auctions.map(async auction => {
-      const bid = await db('auction_bids')
-        .where({auction_id: auction.id})
-        .andWhere({user_id})
-        .max('price as your_recent_bid')
-        .select('id as bid_id', 'created_at as bid_date')
-        .first();
-      const new_auction = {...auction, ...bid}
-      return new_auction
-    })
-    return Promise.all(newAuctions)
+      .max('price as your_current_bid')
+      .groupBy('a.id', 'u.username', 'u.first_name', 'a.name', 'a.description', 'a.date_starting', 'a.date_ending', 'a.image')
+    // const newAuctions = auctions.map(async auction => {
+    //   const bid = await db('auction_bids')
+    //     .where({auction_id: auction.id})
+    //     .andWhere({user_id})
+    //     .max('price as your_recent_bid')
+    //     .select('id as bid_id', 'created_at as bid_date')
+    //     .first();
+    //   const new_auction = {...auction, ...bid}
+    //   return new_auction
+    // })
+    // return Promise.all(newAuctions)
       //   return Promise.all(newAuctions)
       // .then(async auctions => {
       //   const newAuctions = auctions.map(async auction => {
