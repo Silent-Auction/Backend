@@ -137,12 +137,12 @@ function generateToken(user) {
     seller: user.is_seller,
   };
 
-  const options = {
-    expiresIn: '3d', // show other available options in the library's documentation
-  };
+  // const options = {
+  //   expiresIn: '3d', // show other available options in the library's documentation
+  // };
 
   // extract the secret away so it can be required and used where needed
-  return jwt.sign(payload, secrets.jwtSecret, options); // this method is synchronous
+  return jwt.sign(payload, secrets.jwtSecret); // this method is synchronous
 }
 
 

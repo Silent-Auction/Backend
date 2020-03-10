@@ -19,7 +19,8 @@ exports.up = function(knex) {
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('users');
+      .inTable('users')
+      .onDelete('CASCADE');
     tbl.string('name', 128)
       .notNullable();
     tbl.string('description', 1000)
@@ -44,6 +45,7 @@ exports.up = function(knex) {
       .notNullable()
       .references("id")
       .inTable('auctions')
+      .onDelete('CASCADE');
     tbl.integer('price')
       .unsigned()
       .notNullable();
