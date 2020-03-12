@@ -189,7 +189,7 @@ router.use(helpers.verifyToken);
  *    HTTP/1.1 500 Internal Server Error
  */
 // Add auction. Must have the seller role.
-router.post("/", [isSeller, validateAuction] , (req,res) => {
+router.post("/", [isSeller, validateAuction, validDate] , (req,res) => {
   Auctions.add(req.auction).then(id => res.status(201).json(id[0]))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
@@ -311,7 +311,7 @@ function validDate(req, res, next) {
   if (date < date_ending) {
     next();
   } else {
-      res.status(400).json({message: "Auction is already over."})
+      res.status(400).json({message: "The end date has already passed."})
   }
 }
 module.exports = router;

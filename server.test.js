@@ -4,6 +4,7 @@ const server = require("./api/server.js");
 const db = require("./data/dbconfig");
 
 let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoxLCJ1c2VybmFtZSI6InRlc3RzZWxsZXIiLCJzZWxsZXIiOjEsImlhdCI6MTU3MTg2Mzg2OCwiZXhwIjoxNTcyMTIzMDY4fQ.nU35QublVEs5T-sRLOFIi7JNyo0wrNHZv_IsiIb7Pfg"
+
 describe('testing auth endpoints', () => {
     db('users').del().where({username: "testtest"})
     it('returns an id: register successful', () => {
@@ -21,6 +22,7 @@ describe('testing auth endpoints', () => {
             })
     })
 })
+
 describe('user endpoints', () => {
     it('returns status 200', () => {
         return request(server).get('/api/users').set({authorization: token})
@@ -35,6 +37,7 @@ describe('user endpoints', () => {
             .then(res => expect(res.body.auctions.length).toBeGreaterThan(0))
     })
 })
+
 describe('auction endpoints', () => {
     it('get / returns status code 200', () => {
         return request(server).get('/api/auctions').set({authorization: token})
@@ -45,20 +48,35 @@ describe('auction endpoints', () => {
             .then(res => {
                 return expect(res.body.length).toBeTruthy()})
     })
-    db('auctions').truncate()
-    it('post / returns status code 201', () => {
+
+    it('post / returns status code 201', async () => {
+        await db('auctions').truncate();
         const auction = {
             "name": "computer",
             "date_starting": "10/29/19",
-            "date_ending": "11/15/19",
+            "date_ending": (new Date('12/12/2030')).toISOString(),
             "starting_price": 200,
             "image":"https://i.imgur.com/6Pfl5W2.jpg"
         }
+        await request(server).post('/api/auctions').set({authorization: token}).send(auction)
         return request(server).post('/api/auctions').set({authorization: token}).send(auction)
             .then(res => expect(res.status).toBe(201))
     })
+    it('FAILS: invalid auction date', async () => {
+      const auction = {
+          "name": "computer",
+          "date_starting": "10/29/19",
+          "date_ending": "11/30/19",
+          "starting_price": 200,
+          "image":"https://i.imgur.com/6Pfl5W2.jpg"
+      }
+      return request(server).post('/api/auctions').set({authorization: token}).send(auction)
+          .then(res => expect(res.status).toBe(400))
+  })
     it('delete /:id returns status code 201', () => {
-        return request(server).delete('/api/auctions/16').set({authorization: token})
-            .then(res => expect(res.status).toBe(201))
+        return request(server).delete('/api/auctions/1').set({authorization: token})
+            .then(res => {
+              return expect(res.status).toBe(201)
+            })
     })
 })
