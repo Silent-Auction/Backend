@@ -11,23 +11,33 @@ router.get('/', (req,res) => {
     .then(user => {
       if (user) {
         const {password, ...rest} = user;
-        res.status(200).json({...rest})  
+        res.status(200).json({...rest});
       } else {
-        res.status(404).json({message: "User cannot be found."})
+        res.status(404).json({message: "User cannot be found."});
       }
     })
+    .catch(err => {
+      res.status(500).json({message: "Error retrieving user information"});
+    });
 })
 
 router.put('/', [verifyBody, checkPassword, checkUsername], (req, res) => {
   const {username, password, first_name, last_name} = req.settings;
   Settings.update(req.decoded.subject, {username, password, first_name, last_name})
     .then(records => res.status(201).json({records}))
+    .catch(err => {
+      res.status(500).json({message: "Error updating user information"});
+    });
 })
 
 router.delete('/', (req,res) => {
   Settings.remove(req.decoded.subject)
     .then(records => res.status(201).json({records}))
+    .catch(err => {
+      res.status(500).json({message: "Error deleting user information"});
+    });
 })
+
 function verifyBody (req, res, next) {
   settings = req.body;
   if (settings) {
@@ -48,11 +58,14 @@ function checkPassword (req, res, next) {
     Settings.getUserById(req.decoded.subject)
       .then(user => {
         if (user && bcrypt.compareSync(req.settings.old_password, user.password)) {
+          req.settings.password = bcrypt.hashSync(settings.password, 12);
           next();
         } else {
           res.status(403).json({message: "Old password is incorrect."})
         }
       })
+  } else if (password) {
+    res.status(400).json({message: "Missing old_password for verification!"})
   } else {
     next();
   }
