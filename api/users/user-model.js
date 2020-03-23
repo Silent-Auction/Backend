@@ -6,7 +6,7 @@ module.exports = {
   getBuyerAuctions,
 }
 
-function findUser(username) {
+function findUser(id) {
   return db('users')
     .where({id})
     .select('id','username','first_name','last_name','is_seller as role')
