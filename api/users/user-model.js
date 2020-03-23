@@ -8,7 +8,7 @@ module.exports = {
 
 function findUser(username) {
   return db('users')
-    .where({username})
+    .where({id})
     .select('id','username','first_name','last_name','is_seller as role')
     .first();
 }

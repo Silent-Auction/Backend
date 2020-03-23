@@ -62,7 +62,7 @@ const router = express.Router();
 
  */
 router.get("/", (req, res) => {
-  Users.findUser(req.decoded.username)
+  Users.findUser(req.decoded.subject)
     .then(async user => {
       user.role = (user.role ? "seller" : "buyer");
       if (req.decoded.seller) {
