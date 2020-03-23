@@ -1,9 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 const Settings = require('./settings-model');
-const helpers = require("../helpers");
 const router = express.Router();
 
 router.get('/', (req,res) => {
@@ -86,6 +84,6 @@ function checkUsername (req, res, next) {
   } else {
     next();
   }
-
 }
+
 module.exports = router;

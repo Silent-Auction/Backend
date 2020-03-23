@@ -190,7 +190,8 @@ router.use(helpers.verifyToken);
  */
 // Add auction. Must have the seller role.
 router.post("/", [isSeller, validateAuction, validDate] , (req,res) => {
-  Auctions.add(req.auction).then(id => res.status(201).json(id[0]))
+  Auctions.add(req.auction)
+    .then(id => res.status(201).json(id[0]))
     .catch(err => res.status(500).json({message: "Error adding to database"}))
 });
 
