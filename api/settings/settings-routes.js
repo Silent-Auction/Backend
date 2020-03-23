@@ -7,12 +7,15 @@ const helpers = require("../helpers");
 const router = express.Router();
 
 router.get('/', (req,res) => {
-  Settings.getUserById(req.decoded.id)
+  Settings.getUserById(req.decoded.subject)
     .then(user => {
-      const {password, ...rest} = user;
-      res.status(200).json({...rest})  
+      if (user) {
+        const {password, ...rest} = user;
+        res.status(200).json({...rest})  
+      } else {
+        res.status(404).json({message: "User cannot be found."})
       }
-    )
+    })
 })
 
 router.put('/', [verifyBody, checkPassword, checkUsername], (req, res) => {
@@ -21,6 +24,10 @@ router.put('/', [verifyBody, checkPassword, checkUsername], (req, res) => {
     .then(records => res.status(201).json({records}))
 })
 
+router.delete('/', (req,res) => {
+  Settings.remove(req.decoded.subject)
+    .then(records => res.status(201).json({records}))
+})
 function verifyBody (req, res, next) {
   settings = req.body;
   if (settings) {

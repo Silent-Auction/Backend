@@ -29,7 +29,7 @@ const router = express.Router();
  *    HTTP/1.1 500 Internal Server Error
  */ 
 router.get('/', helpers.verifyToken, (req,res) => {
-  Users.findUser(req.decoded.username)
+  Users.findUserById(req.decoded.subject)
     .then(user => {
       user.role = (user.role ? "seller" : "buyer")
       res.status(200).json(user);

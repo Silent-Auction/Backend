@@ -2,7 +2,7 @@ const db = require("../data/dbconfig");
 
 module.exports = {
   register,
-  findUser,
+  findUserById,
   getUser
 }
 
@@ -10,8 +10,8 @@ function register(user) {
   return db('users').insert(user, ['id'])
 }
 
-function findUser(username) {
-  return db('users').where({username: username})
+function findUserById(id) {
+  return db('users').where({id})
     .select('id','username','first_name','last_name','is_seller as role')
     .first();
 }

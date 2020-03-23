@@ -3,7 +3,8 @@ const db = require("../../data/dbconfig");
 module.exports = {
   getUserByName,
   getUserById,
-  update
+  update,
+  remove
 }
 
 function getUserByName(username) {
@@ -15,6 +16,11 @@ function getUserById(id) {
   return db('users').where({id})
     .first();
 }
-function update(username, data) {
-  return db('users').where({username: username}).update({...data})
+
+function update(id, data) {
+  return db('users').where({id}).update({...data})
+}
+
+function remove(id) {
+  return db('users').where({id}).del()
 }
