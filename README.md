@@ -1,7 +1,9 @@
 # Backend
 API link: https://silent-auction-bw.herokuapp.com/
 Documentation: https://silent-auction-bw.herokuapp.com/apidoc/
-
+# Frontend
+Repository: https://github.com/jordandoan/silent-auction
+Deployment: https://silent-auction-jd.netlify.app/
 # Endpoints
 
 ## api/auth
